@@ -1,0 +1,14 @@
+#navbar {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    background: var(--light);
+}
+
+#navcol-1 {
+    margin-left: 2rem;
+}
+
+.navbar-item {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}

@@ -1,0 +1,7 @@
+.text-white {
+    color: var(--white);
+}
+
+.func-button {
+    margin-bottom: 1rem;
+}
