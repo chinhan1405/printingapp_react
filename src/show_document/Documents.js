@@ -10,12 +10,12 @@ export default function Documents() {
                     <div className="col-md-4 d-flex d-lg-flex justify-content-center justify-content-lg-center func-button"><button className="btn btn-info" type="button" style={{marginLeft: '0px'}}>+&nbsp; Tải lên tài liệu mới</button></div>
                 </div>
             </div>
-            <div className='container'>
+            <div className='container' style={{maxWidth: '90%'}}>
                 <div className='row'>
                     {
                         documents.map((document) => {
                             return (
-                                <div className="col-md-6">
+                                <div className="col-xl-4 col-md-6 col-sm-12">
                                     <DocumentCard name={document.name} date={document.date} pages={document.pages} />
                                 </div>
                             )
@@ -32,12 +32,21 @@ function DocumentCard(params) {
     return (
         <div className="card" style={{marginBottom: '2rem', border: 0}}>
             <div className="card-body" style={{background: '#2d3638', borderRadius: '20px'}}>
-                <h4 className="card-title text-white">{params.name}</h4>
-                <p className="card-text text-white">Thời gian: {params.date}</p>
-                <p className="card-text text-white">Số trang: {params.pages}</p>
-                <div className="row">
-                    <div className="col-5 col-xl-6 d-flex d-xl-flex justify-content-center justify-content-xl-center"><button className="btn btn-primary" type="button">In ngay</button></div>
-                    <div className="col d-flex d-xl-flex justify-content-center justify-content-xl-center"><button className="btn btn-primary" type="button">Chọn tài liệu</button></div>
+                <div className="row align-items-center">
+                    <div className="col-4">
+                        <img className="card-image" src="img/tutor.jpg" alt="thumbnail"/>
+                    </div>
+                    <div className="col-8 align-items-center">
+                        <div className = "d-flex flex-column">
+                            <h4 className="card-title text-white">{params.name}</h4>
+                            <p className="card-text text-white">Thời gian: {params.date}</p>
+                            <p className="card-text text-white">Số trang: {params.pages}</p>
+                            <div className="row">
+                                <div className="col-5 col-xl-6 d-flex d-xl-flex justify-content-center justify-content-xl-center"><button className="btn btn-primary" type="button">In ngay</button></div>
+                                <div className="col d-flex d-xl-flex justify-content-center justify-content-xl-center"><button className="btn btn-primary" type="button">Chọn tài liệu</button></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -58,7 +67,7 @@ var documents = [
         "pages" : 102
     },
     {
-        "name" : "document3",
+        "name" : "documen t3sfdsdkkkkkkkkkkkkkkkkkkkkkk",
         "content" : "This is the content of document1",
         "date" : "2015-01-01 00:00:00",
         "pages" : 10123
