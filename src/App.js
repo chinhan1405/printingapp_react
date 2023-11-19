@@ -2,6 +2,8 @@ import Footer from './common/Footer';
 import Navbar from './common/Navbar';
 import Home from './homepage/Home';
 import Documents from './show_document/Documents';
+import ConfigPrint from './config_print/ConfigPrint';
+import PrintConfirm from './print_confirm/PrintConfirm';
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -11,6 +13,8 @@ function Router() {
         <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/documents" element={<Documents />} />
+            <Route path='/configprint' element={<ConfigPrint />} />
+            <Route path='/printconfirm' element={<PrintConfirm />} />
         </Routes>
       </BrowserRouter>
     );

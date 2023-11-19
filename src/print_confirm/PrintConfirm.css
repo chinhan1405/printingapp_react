@@ -1,0 +1,13 @@
+.title {
+  margin     : 2rem;
+  font-size  : 20px;
+  font-weight: bold;
+}
+
+.scrollbox {
+  height: 20rem;
+  width: 100%;
+  border: 1px solid;
+  overflow: scroll;
+  padding: 1rem;
+}

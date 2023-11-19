@@ -1,0 +1,42 @@
+.custom-select {
+    height: 2.5rem;
+    width : 15rem;
+}
+
+.config-box {
+    margin-bottom: 1rem;
+    /* Thêm khoảng cách giữa các hộp chọn */
+}
+
+.daudong {
+    font-weight  : bold;
+    font-size    : 20px;
+    margin-bottom: 1rem;
+}
+
+.custom-input {
+    height     : 2rem;
+    width      : 10rem;
+}
+
+.print-button {
+    /* position        : absolute; */
+    /* top             : 80px;
+    left            : 80px; */
+    color           : white;
+    font-size       : 20px;
+    background-color: #6BCAE2;
+    border-radius   : 5px;
+    border          : none;
+    text-align      : center;
+    height          : 5rem;
+    width           : 100%;
+    margin-bottom   : 2rem;
+}
+
+#thumbnail-image {
+    width: 100%;
+    max-height: 80%;
+    aspect-ratio: 5/8;
+    margin: auto;
+}

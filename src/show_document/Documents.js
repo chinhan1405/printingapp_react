@@ -38,7 +38,7 @@ function DocumentCard(params) {
                     </div>
                     <div className="col-8 align-items-center">
                         <div className = "d-flex flex-column">
-                            <h4 className="card-title text-white">{params.name}</h4>
+                            <h4 className="card-title text-white mb-4">{params.name}</h4>
                             <p className="card-text text-white">Thời gian: {params.date}</p>
                             <p className="card-text text-white">Số trang: {params.pages}</p>
                             <div className="row">
