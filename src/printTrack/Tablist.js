@@ -7,6 +7,10 @@ import TabPanel from '@mui/lab/TabPanel';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
 
 import MyDialog from './printResult';
 
@@ -88,7 +92,6 @@ function OrderCard({document}) {
   return (
     <div>
     <Card sx={{ display: 'flex', flexDirection: 'row', border: '2px solid #5DADE2'}} 
-          onClick =  {handleClickOpen}
           onMouseEnter={handleMouseEnter} 
           onMouseLeave={handleMouseLeave}
           style={{ backgroundColor: hover ? 'lightgray' : 'white' }}
@@ -111,22 +114,41 @@ function OrderCard({document}) {
           </Box>
           <Box sx={{ flex: '1 1 auto' }}>
             <Typography variant="subtitle1" color="text.secondary" component="div">
-              Thời gian in: hh:mm:ss DD/MM/YYYY
+              Thời gian in: {document.printStart}
             </Typography>
             <Typography variant="subtitle1" color="text.secondary" component="div">
               Tình trạng: {document.state}
+            </Typography>
+            <Typography variant="subtitle1" color="text.secondary" component="div">
+              Máy in: {document.printer}
             </Typography>
             
           </Box>
         </CardContent>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 1 }}>
           {
-          document.state == "Đang đợi" ? <Button size="small">Hủy</Button> : null
+          document.state == "Đang đợi" ? <Button size="small" onClick =  {handleClickOpen}>Hủy</Button> : null
           }
         </Box>
       </Box>
     </Card>
-    {/* <MyDialog open={open} handleClose={handleClose} document={document}/> */}
+    <Dialog
+        open={open}
+        onClose={handleClose}
+      >
+        <DialogTitle>
+          {"Xác nhận xóa lệnh"}
+        </DialogTitle>
+        <DialogContent>
+          Bạn chắc chắn muốn xóa yêu cầu này?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Đồng ý</Button>
+          <Button onClick={handleClose} autoFocus>
+            Hủy
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
 
   );
@@ -141,21 +163,27 @@ var waitingDoc = [
     "date" : "2015-01-01 00:00:00",
     "pages" : 10,
     "ava" : "img/fileAva/img1.png",
-    "state": "Đang đợi"
+    "state": "Đang đợi",
+    "printStart": null, 
+    "printer": "Máy in 1"
   },
   {
     "name" : "document5",
     "date" : "2015-01-01 00:00:00",
     "pages" : 102,
     "ava" : "img/fileAva/img5.png",
-    "state": "Đang đợi"
+    "state": "Đang đợi",
+    "printStart": null, 
+    "printer": "Máy in 1"
   },
   {
     "name" : "document7",
     "date" : "2015-01-01 00:00:00",
     "pages" : 102,
     "ava" : "img/fileAva/img7.png",
-    "state": "Đang đợi"
+    "state": "Đang đợi",
+    "printStart": null, 
+    "printer": "Máy in 1" 
   }
 ]
 var printingDoc = [
@@ -164,8 +192,9 @@ var printingDoc = [
     "date" : "2015-01-01 00:00:00",
     "pages" : 102,
     "ava" : "img/fileAva/img2.png",
-    "state": "Đang in"
-    
+    "state": "Đang in",
+    "printStart": "2023-11-16 00:00:00", 
+    "printer": "Máy in 1"
 
   }
 ]
@@ -176,14 +205,20 @@ var readyDoc = [
     "date" : "2015-01-01 00:00:00",
     "pages" : 10123,
     "ava" : "img/fileAva/img4.png",
-    "state": "Đã in xong"
+    "state": "Đã in xong",
+    "printStart": "2023-11-16 15:20:00",
+    "printer": "Máy in 1"
+
   },
   {
     "name" : "document6",
     "date" : "2015-01-01 00:00:00",
     "pages" : 10123,
     "ava" : "img/fileAva/img6.png",
-    "state": "Đã in xong"
+    "state": "Đã in xong",
+    "printStart": "2023-11-16 00:00:00", 
+    "printer": "Máy in 1"
+
   }
 ]
 
@@ -194,21 +229,27 @@ var completedDoc = [
       "date" : "2015-01-01 00:00:00",
       "pages" : 10123,
       "ava" : "img/fileAva/img8.png",
-      "state": "Đã xác nhận"
+      "state": "Đã xác nhận",
+      "printStart": "2023-11-12 00:00:00", 
+      "printer": "Máy in 2"
   },
   {
       "name" : "document9",
       "date" : "2015-01-01 00:00:00",
       "pages" : 102,
       "ava" : "img/fileAva/img9.png",
-      "state": "Đã xác nhận"
+      "state": "Đã xác nhận",
+      "printStart": "2023-11-10 00:00:00", 
+      "printer": "Máy in 2"
   },
   {
       "name" : "document10",
       "date" : "2015-01-01 00:00:00",
       "pages" : 10123,
       "ava" : "img/fileAva/img10.png",
-      "state": "Đã xác nhận"
+      "state": "Đã xác nhận",
+      "printStart": "2023-11-10 00:00:00", 
+      "printer": "Máy in 1"
   },
 
   {
@@ -216,13 +257,16 @@ var completedDoc = [
       "date" : "2015-01-01 00:00:00",
       "pages" : 10123,
       "ava" : "img/fileAva/img14.png",
-      "state": "Đã xác nhận"
+      "state": "Đã xác nhận",
+      "printStart": "2023-11-10 00:00:00"
   },
   {
       "name" : "document3",
       "date" : "2015-01-01 00:00:00",
       "pages" : 10141,
       "ava" : "img/fileAva/img3.png",
-      "state": "Đã xác nhận"
+      "state": "Đã xác nhận",
+      "printStart": "2023-11-10 00:00:00", 
+      "printer": "Máy in 3"
   }
 ]

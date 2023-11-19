@@ -7,15 +7,19 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import {CardActions, CardHeader, CardMedia } from '@mui/material';
-export default function MyDialog(open, handleClose, document) {
+export default function MyDialog(open, handleClose) {
     return(
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>
-            TÀI LIỆU
+            Xóa yêu cầu in
           </DialogTitle>
           <DialogContent>
-            <popupContent document={document}/>
+            Bạn muốn xóa lệnh in này?
           </DialogContent>
+          <DialogActions>
+            <Button onClick = {handleClose}>Đồng ý</Button>
+            <Button onClick = {handleClose}>Hủy</Button>
+          </DialogActions>
          
         </Dialog>
     );
