@@ -4,6 +4,7 @@ import Home from './homepage/Home';
 import Documents from './show_document/Documents';
 import ConfigPrint from './config_print/ConfigPrint';
 import PrintConfirm from './print_confirm/PrintConfirm';
+import PrintTrack from './printTrack/printTrack' 
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
