@@ -16,6 +16,7 @@ function Router() {
             <Route path="/documents" element={<Documents />} />
             <Route path='/configprint' element={<ConfigPrint />} />
             <Route path='/printconfirm' element={<PrintConfirm />} />
+            <Route path='/printtrack' element={<PrintTrack />} />
         </Routes>
       </BrowserRouter>
     );
