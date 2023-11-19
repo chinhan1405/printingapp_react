@@ -12,8 +12,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 
-import MyDialog from './printResult';
-
 import { Button, CardActions, CardHeader, CardMedia } from '@mui/material';
 
 export default function TrackTab() {
@@ -73,7 +71,7 @@ function OrderCard({document}) {
   const [open, setOpen] = React.useState(false);
   const [hover, setHover] = React.useState(false);
 
-  const handleClickOpen = () => {
+  const handleDeleteClick = () => {
     setOpen(true);
   };
 
@@ -89,12 +87,17 @@ function OrderCard({document}) {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleConfirmClick = () => {
+
+  };
   return (
     <div>
     <Card sx={{ display: 'flex', flexDirection: 'row', border: '2px solid #5DADE2'}} 
           onMouseEnter={handleMouseEnter} 
           onMouseLeave={handleMouseLeave}
           style={{ backgroundColor: hover ? 'lightgray' : 'white' }}
+          onClose={{handleConfirmClick}}
     >
       <CardMedia 
         component="img"
@@ -117,7 +120,7 @@ function OrderCard({document}) {
               Thời gian in: {document.printStart}
             </Typography>
             <Typography variant="subtitle1" color="text.secondary" component="div">
-              Tình trạng: {document.state}
+              {document.state == " waiting"? <p>Tình trạng: Đang đợi </p> : document.state == "printing" ? <p>Tình trạng: Đang in </p> : document.state == "ready" ? <p>Tình trạng: Chờ xác nhận </p> : <p>Tình trạng: Đã xác nhận</p>}
             </Typography>
             <Typography variant="subtitle1" color="text.secondary" component="div">
               Máy in: {document.printer}
@@ -127,7 +130,10 @@ function OrderCard({document}) {
         </CardContent>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 1 }}>
           {
-          document.state == "Đang đợi" ? <Button size="small" onClick =  {handleClickOpen}>Hủy</Button> : null
+          document.state == "waiting" ? <Button size="small" id="deleteBtn" onClick =  {handleDeleteClick}>Hủy</Button> : null
+          }
+          {
+          document.state == "ready"?  <Button size="small" id="confirmBtn" onClick =  {handleConfirmClick}>Xác nhận</Button> : null
           }
         </Box>
       </Box>
@@ -163,7 +169,7 @@ var waitingDoc = [
     "date" : "2015-01-01 00:00:00",
     "pages" : 10,
     "ava" : "img/fileAva/img1.png",
-    "state": "Đang đợi",
+    "state": "waiting",
     "printStart": null, 
     "printer": "Máy in 1"
   },
@@ -172,7 +178,7 @@ var waitingDoc = [
     "date" : "2015-01-01 00:00:00",
     "pages" : 102,
     "ava" : "img/fileAva/img5.png",
-    "state": "Đang đợi",
+    "state": "waiting",
     "printStart": null, 
     "printer": "Máy in 1"
   },
@@ -181,7 +187,7 @@ var waitingDoc = [
     "date" : "2015-01-01 00:00:00",
     "pages" : 102,
     "ava" : "img/fileAva/img7.png",
-    "state": "Đang đợi",
+    "state": "waiting",
     "printStart": null, 
     "printer": "Máy in 1" 
   }
@@ -192,7 +198,7 @@ var printingDoc = [
     "date" : "2015-01-01 00:00:00",
     "pages" : 102,
     "ava" : "img/fileAva/img2.png",
-    "state": "Đang in",
+    "state": "printing",
     "printStart": "2023-11-16 00:00:00", 
     "printer": "Máy in 1"
 
@@ -205,7 +211,7 @@ var readyDoc = [
     "date" : "2015-01-01 00:00:00",
     "pages" : 10123,
     "ava" : "img/fileAva/img4.png",
-    "state": "Đã in xong",
+    "state": "ready",
     "printStart": "2023-11-16 15:20:00",
     "printer": "Máy in 1"
 
@@ -215,7 +221,7 @@ var readyDoc = [
     "date" : "2015-01-01 00:00:00",
     "pages" : 10123,
     "ava" : "img/fileAva/img6.png",
-    "state": "Đã in xong",
+    "state": "ready",
     "printStart": "2023-11-16 00:00:00", 
     "printer": "Máy in 1"
 
@@ -229,7 +235,7 @@ var completedDoc = [
       "date" : "2015-01-01 00:00:00",
       "pages" : 10123,
       "ava" : "img/fileAva/img8.png",
-      "state": "Đã xác nhận",
+      "state": "confirmed",
       "printStart": "2023-11-12 00:00:00", 
       "printer": "Máy in 2"
   },
@@ -238,7 +244,7 @@ var completedDoc = [
       "date" : "2015-01-01 00:00:00",
       "pages" : 102,
       "ava" : "img/fileAva/img9.png",
-      "state": "Đã xác nhận",
+      "state": "confirmed",
       "printStart": "2023-11-10 00:00:00", 
       "printer": "Máy in 2"
   },
@@ -247,7 +253,7 @@ var completedDoc = [
       "date" : "2015-01-01 00:00:00",
       "pages" : 10123,
       "ava" : "img/fileAva/img10.png",
-      "state": "Đã xác nhận",
+      "state": "confirmed",
       "printStart": "2023-11-10 00:00:00", 
       "printer": "Máy in 1"
   },
@@ -257,15 +263,16 @@ var completedDoc = [
       "date" : "2015-01-01 00:00:00",
       "pages" : 10123,
       "ava" : "img/fileAva/img14.png",
-      "state": "Đã xác nhận",
-      "printStart": "2023-11-10 00:00:00"
+      "state": "confirmed",
+      "printStart": "2023-11-10 00:00:00", 
+      "printer": "Máy in 5"
   },
   {
       "name" : "document3",
       "date" : "2015-01-01 00:00:00",
       "pages" : 10141,
       "ava" : "img/fileAva/img3.png",
-      "state": "Đã xác nhận",
+      "state": "confirmed",
       "printStart": "2023-11-10 00:00:00", 
       "printer": "Máy in 3"
   }

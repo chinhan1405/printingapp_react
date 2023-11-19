@@ -10,7 +10,7 @@ export default function Navbar() {
                         <li className="nav-item navbar-item"><a className="nav-link" href="/">Giá cả</a></li>
                         <li className="nav-item navbar-item"><a className="nav-link" href="/">Hỗ trợ</a></li>
                         <li className="nav-item navbar-item"><a className="nav-link" href="/documents">In tài liệu</a></li>
-                        <li className="nav-item navbar-item"><a className="nav-link" href="/">Lịch sử in</a></li>
+                        <li className="nav-item navbar-item"><a className="nav-link" href="/printtrack">Lịch sử in</a></li>
                     </ul>
                     <AccountButton name="Nhan" avatar="hcmut.jpg" />
                 </div>
