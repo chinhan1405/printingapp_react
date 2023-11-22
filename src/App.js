@@ -8,6 +8,7 @@ import PrintTrack from './printTrack/printTrack'
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+
 function Router() {
     return (
       <BrowserRouter>
@@ -15,7 +16,7 @@ function Router() {
             <Route path="/" element={<Home />} />
             <Route path="/documents" element={<Documents />} />
             <Route path='/configprint' element={<ConfigPrint />} />
-            <Route path='/printconfirm' element={<PrintConfirm />} />
+            <Route path='/printconfirm/' element={<PrintConfirm />} />
             <Route path='/printtrack' element={<PrintTrack />} />
         </Routes>
       </BrowserRouter>
@@ -30,7 +31,7 @@ function App() {
         <div>
             <Navbar />
             <Router />
-            <Footer />
+            <Footer/>
         </div>
     );
 }

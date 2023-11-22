@@ -1,3 +1,8 @@
 .App {
   text-align: center;
 }
+
+Router {
+    flex: 1;
+    margin-bottom: var(--footer-height, 0);
+}

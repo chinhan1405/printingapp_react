@@ -1,8 +1,8 @@
 import './Footer.css';
 
-export default function Footer() {
+const Footer = (() => {
     return (
-        <footer style={{background: 'var(--light)'}} className='fixed-bottom'>
+        <footer style={{ background: 'var(--light)' }} className='fixed-bottom'>
             <div className="container text-center py-4">
                 <ul className="list-inline">
                     <li className="list-inline-item"><a className="text-dark footer" href="/">Ứng dụng di động</a></li>
@@ -14,4 +14,5 @@ export default function Footer() {
             </div>
         </footer>
     )
-}
+});
+export default Footer;
