@@ -11,15 +11,38 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-
+import configs from '../configs/api_config';
 import { Button, CardActions, CardHeader, CardMedia } from '@mui/material';
-
+import { useNavigate } from 'react-router-dom';
+const moment = require('moment');
 export default function TrackTab() {
-  const [value, setValue] = React.useState('1');
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+    const [value, setValue] = React.useState('1');
+    const [histories, setHistories] = React.useState([]);
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+    React.useEffect(() => {
+        let status = "";
+        if (value === "1") {
+            status = "inqueue";
+        }
+        else if (value === "2") {
+            status = "printing";
+        }
+        else if (value === "3") {
+            status = "printed";
+        }
+        else {
+            status = "done";
+        }
+        fetch(configs.baseAPI + configs.getHisByStatusAPI + status)
+            .then(response => response.json())
+            .then(data => {
+                setHistories(data.data);
+                
+            })
+            .catch(error => console.error('Error fetching documents:', error));
+    }, [value]);
 
   return (
     <Box sx={{ width: '100%', typography: 'body1' }}>
@@ -32,45 +55,50 @@ export default function TrackTab() {
             <Tab label="Hoàn tất" value="4" />
           </TabList>
         </Box>
-        <TabPanel value="1">
-          {
-            waitingDoc.map(doc => (
-              <OrderCard document = {doc}/>
-            ))
-          }
-        </TabPanel>
-        <TabPanel value="2">
-          {
-            printingDoc.map(doc => (
-              <OrderCard document = {doc}/>
-            ))
-          }
-          
-        </TabPanel>
-        <TabPanel value="3">
-          {
-            readyDoc.map(doc => (
-              <OrderCard document = {doc}/>
-            ))
-          }
-        </TabPanel>
-          
-        <TabPanel value="4">
-          {
-            completedDoc.map(doc => (
-              <OrderCard document = {doc}/>
-            ))
-          }
-        </TabPanel>
+              <TabPanel value="1">
+                  {
+                      histories.map((his) => (
+                          <OrderCard key={his._id} history={his} />
+                      )
+                      )
+                  }
+              </TabPanel>
+              <TabPanel value="2">
+                  {
+                      histories.map((his) => (
+                          <OrderCard key={his._id} history={his} />
+                      )
+                      )
+                  }
+              </TabPanel>
+              <TabPanel value="3">
+                  {
+                      histories.map((his) => (
+                          <OrderCard key={his._id} history={his} />
+                      )
+                      )
+                  }
+              </TabPanel>
+              <TabPanel value="4">
+                  {
+                      histories.map((his) => (
+                          <OrderCard key={his._id} history={his} />
+                      )
+                      )
+                  }
+              </TabPanel>
       </TabContext>
     </Box>
   );
 }
 
-function OrderCard({document}) {
+function OrderCard({ history }) {
+    const [document, setDocument] = React.useState('')
+    const [config, setConfig] = React.useState('')
   const [open, setOpen] = React.useState(false);
-  const [hover, setHover] = React.useState(false);
-
+    const [hover, setHover] = React.useState(false);
+    const navigate = useNavigate();
+    
   const handleDeleteClick = () => {
     setOpen(true);
   };
@@ -86,23 +114,73 @@ function OrderCard({document}) {
 
   const handleClose = () => {
     setOpen(false);
-  };
+    };
+
+    const handleDelete = () => {
+        fetch(configs.baseAPI + configs.delHisByIdAPI + history._id)
+            .then(response => response.json())
+            .then(data => {
+            })
+            .catch(error => console.error('Error fetching documents:', error));
+
+        fetch(configs.baseAPI + configs.getHisByIdAPI)
+            .then(response => response.json())
+            .then(data => {
+                let found_config = data.data.find(obj => obj.config_id === history.config_id)
+                if (!found_config) {
+                    fetch(configs.baseAPI + configs.delPrtConfigByIdAPI + history.config_id)
+                        .then(response => response.json())
+                        .then(data => {
+                        })
+                        .catch(error => console.error('Error fetching documents:', error));
+                }
+            })
+            .catch(error => console.error('Error fetching documents:', error));
+        document.status = "ready";
+        fetch(configs.baseAPI + configs.updateDocByIdAPI + history.document_id, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(document),
+        })
+            .then(response => response.json())
+            .then(data => {
+            })
+            .catch(error => console.error('Error updating document:', error));
+        setOpen(false);
+        window.location.reload();
+    };
 
   const handleConfirmClick = () => {
 
-  };
+    };
+    React.useEffect(() => {
+        fetch(configs.baseAPI + configs.getAllDocAPI + history.document_id)
+            .then(response => response.json())
+            .then(doc => {
+                setDocument(doc.data);
+            })
+            .catch(error => console.error('Error fetching documents:', error));
+        fetch(configs.baseAPI + configs.getPrtConfigByIdAPI + history.config_id)
+            .then(response => response.json())
+            .then(data => {
+                setConfig(data.data)
+            })
+            .catch(error => console.error('Error fetching documents:', error));
+    }, []);
   return (
     <div>
     <Card sx={{ display: 'flex', flexDirection: 'row', border: '2px solid #5DADE2'}} 
           onMouseEnter={handleMouseEnter} 
           onMouseLeave={handleMouseLeave}
           style={{ backgroundColor: hover ? 'lightgray' : 'white' }}
-          onClose={{handleConfirmClick}}
+          onClose={handleConfirmClick}
     >
       <CardMedia 
         component="img"
         sx={{ width: 151 }}
-        image={document.ava}
+        image={"img/fileAva/img4.png"}
         alt="Document"
       />
       <Box sx={{ display: 'flex', flexDirection: 'column', flex: '1 1 auto' }}>
@@ -117,23 +195,23 @@ function OrderCard({document}) {
           </Box>
           <Box sx={{ flex: '1 1 auto' }}>
             <Typography variant="subtitle1" color="text.secondary" component="div">
-              Thời gian in: {document.printStart}
+              Thời gian in: {moment(history.created_at).format('DD/MM/YYYY')}
             </Typography>
             <Typography variant="subtitle1" color="text.secondary" component="div">
-              {document.state == " waiting"? <p>Tình trạng: Đang đợi </p> : document.state == "printing" ? <p>Tình trạng: Đang in </p> : document.state == "ready" ? <p>Tình trạng: Chờ xác nhận </p> : <p>Tình trạng: Đã xác nhận</p>}
+                              {history.status === "inqueue" ? <p>Tình trạng: Đang đợi </p> : history.status === "printing" ? <p>Tình trạng: Đang in </p> : history.status === "printed" ? <p>Tình trạng: Chờ xác nhận </p> : <p>Tình trạng: Đã xác nhận</p>}
             </Typography>
             <Typography variant="subtitle1" color="text.secondary" component="div">
-              Máy in: {document.printer}
+              Máy in: {config.printer}
             </Typography>
             
           </Box>
         </CardContent>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 1 }}>
           {
-          document.state == "waiting" ? <Button size="small" id="deleteBtn" onClick =  {handleDeleteClick}>Hủy</Button> : null
+                          history.status === "inqueue" ? <Button size="small" id="deleteBtn" onClick =  {handleDeleteClick}>Hủy</Button> : null
           }
           {
-          document.state == "ready"?  <Button size="small" id="confirmBtn" onClick =  {handleConfirmClick}>Xác nhận</Button> : null
+                          history.status === "printed"?  <Button size="small" id="confirmBtn" onClick =  {handleConfirmClick}>Xác nhận</Button> : null
           }
         </Box>
       </Box>
@@ -149,7 +227,7 @@ function OrderCard({document}) {
           Bạn chắc chắn muốn xóa yêu cầu này?
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Đồng ý</Button>
+          <Button onClick={handleDelete}>Đồng ý</Button>
           <Button onClick={handleClose} autoFocus>
             Hủy
           </Button>
@@ -159,121 +237,3 @@ function OrderCard({document}) {
 
   );
 }
-
-
-
-
-var waitingDoc = [
-  {
-    "name" : "document1",
-    "date" : "2015-01-01 00:00:00",
-    "pages" : 10,
-    "ava" : "img/fileAva/img1.png",
-    "state": "waiting",
-    "printStart": null, 
-    "printer": "Máy in 1"
-  },
-  {
-    "name" : "document5",
-    "date" : "2015-01-01 00:00:00",
-    "pages" : 102,
-    "ava" : "img/fileAva/img5.png",
-    "state": "waiting",
-    "printStart": null, 
-    "printer": "Máy in 1"
-  },
-  {
-    "name" : "document7",
-    "date" : "2015-01-01 00:00:00",
-    "pages" : 102,
-    "ava" : "img/fileAva/img7.png",
-    "state": "waiting",
-    "printStart": null, 
-    "printer": "Máy in 1" 
-  }
-]
-var printingDoc = [
-  {
-    "name" : "document2",
-    "date" : "2015-01-01 00:00:00",
-    "pages" : 102,
-    "ava" : "img/fileAva/img2.png",
-    "state": "printing",
-    "printStart": "2023-11-16 00:00:00", 
-    "printer": "Máy in 1"
-
-  }
-]
-
-var readyDoc = [
-  {
-    "name" : "documen 4",
-    "date" : "2015-01-01 00:00:00",
-    "pages" : 10123,
-    "ava" : "img/fileAva/img4.png",
-    "state": "ready",
-    "printStart": "2023-11-16 15:20:00",
-    "printer": "Máy in 1"
-
-  },
-  {
-    "name" : "document6",
-    "date" : "2015-01-01 00:00:00",
-    "pages" : 10123,
-    "ava" : "img/fileAva/img6.png",
-    "state": "ready",
-    "printStart": "2023-11-16 00:00:00", 
-    "printer": "Máy in 1"
-
-  }
-]
-
-var completedDoc = [
-  
-  {
-      "name" : "document8",
-      "date" : "2015-01-01 00:00:00",
-      "pages" : 10123,
-      "ava" : "img/fileAva/img8.png",
-      "state": "confirmed",
-      "printStart": "2023-11-12 00:00:00", 
-      "printer": "Máy in 2"
-  },
-  {
-      "name" : "document9",
-      "date" : "2015-01-01 00:00:00",
-      "pages" : 102,
-      "ava" : "img/fileAva/img9.png",
-      "state": "confirmed",
-      "printStart": "2023-11-10 00:00:00", 
-      "printer": "Máy in 2"
-  },
-  {
-      "name" : "document10",
-      "date" : "2015-01-01 00:00:00",
-      "pages" : 10123,
-      "ava" : "img/fileAva/img10.png",
-      "state": "confirmed",
-      "printStart": "2023-11-10 00:00:00", 
-      "printer": "Máy in 1"
-  },
-
-  {
-      "name" : "document14",
-      "date" : "2015-01-01 00:00:00",
-      "pages" : 10123,
-      "ava" : "img/fileAva/img14.png",
-      "state": "confirmed",
-      "printStart": "2023-11-10 00:00:00", 
-      "printer": "Máy in 5"
-  },
-  {
-      "name" : "document3",
-      "date" : "2015-01-01 00:00:00",
-      "pages" : 10141,
-      "ava" : "img/fileAva/img3.png",
-      "state": "confirmed",
-      "printStart": "2023-11-10 00:00:00", 
-      "printer": "Máy in 3"
-  }
-]

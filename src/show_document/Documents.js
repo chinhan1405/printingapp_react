@@ -29,7 +29,7 @@ export default function Documents() {
             updatedDocuments[index].status = "selected"
         }
         else updatedDocuments[index].status = "ready"
-        fetch(configs.baseAPI + configs.updateDocByIDAPI + updatedDocuments[index]._id, {
+        fetch(configs.baseAPI + configs.updateDocByIdAPI + updatedDocuments[index]._id, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ export default function Documents() {
             if (i !== index) {
                 updatedDocuments[i].status = "ready";
             }
-            fetch(configs.baseAPI + configs.updateDocByIDAPI + updatedDocuments[i]._id, {
+            fetch(configs.baseAPI + configs.updateDocByIdAPI + updatedDocuments[i]._id, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

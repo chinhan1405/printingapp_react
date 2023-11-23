@@ -15,44 +15,62 @@ const ConfigPrint = () => {
     const [selectedSizePage, setSelectedSizePage] = useState("Nothing");
     const [selectedMarginPage, setSelectedMarginPage] = useState("Nothing");
     const [selectedSheetPage, setSelectedSheetPage] = useState("Nothing");
+    const [checkConfigs, selectedCheckConfigs] = useState(false);
     const navigate = useNavigate();
+
+    const checkConfig = () => {
+        selectedCheckConfigs((selectedPrinter !== "Nothing") && (numberCopy !== "Nothing") &&
+            (selectedCustomPrint !== "Nothing") && (selectedPrintSide !== "Nothing") &&
+            (selectedOrientation !== "Nothing") && (selectedSizePage !== "Nothing") &&
+            (selectedMarginPage !== "Nothing") && (selectedSheetPage !== "Nothing"));
+    };
     const handlePrinterChange = (event) => {
         setSelectedPrinter(event.target.value);
+        checkConfig();
     };
 
     const handleCustomPrintChange = (event) => {
         setSelectedCustomPrint(event.target.value);
+        checkConfig();
     };
 
     const handlePrintSideChange = (event) => {
         setSelectedPrintSide(event.target.value);
+        checkConfig();
     };
 
     const handleFirstNumberPageChange = (event) => {
         setFirstNumberPage(event.target.value);
+        checkConfig();
     };
     const handleSecondNumberPageChange = (event) => {
         setSecondNumberPage(event.target.value);
+        checkConfig();
     };
 
     const handleCollectedChange = (event) => {
         setSelectedCollated(event.target.value);
+        checkConfig();
     };
 
     const handleOrientationChange = (event) => {
         setSelectedOrientation(event.target.value);
+        checkConfig();
     };
 
     const handleSizePageChange = (event) => {
         setSelectedSizePage(event.target.value);
+        checkConfig();
     };
 
     const handleMarginPageChange = (event) => {
         setSelectedMarginPage(event.target.value);
+        checkConfig();
     };
 
     const handleSheetPageChange = (event) => {
         setSelectedSheetPage(event.target.value);
+        checkConfig();
     };
 
     const handlePrintButtonClick = () => {
@@ -66,20 +84,8 @@ const ConfigPrint = () => {
             page_size: selectedSizePage,
             page_margin: selectedMarginPage,
             pages_sheet: selectedSheetPage,
-        } 
-        fetch(configs.baseAPI + configs.createPrtConfigAPI, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(printconfigs),
-        })
-            .then(response => response.json())
-            .then(data => {
-                navigate('/printconfirm/', {state: data.data._id});
-            })
-            .catch(error => console.error('Error updating document:', error));
-        //navigate('/printconfirm/');
+        }
+        navigate('/printconfirm/', { state: printconfigs});
     };
 
     const handleCopyChange = (event) => {
@@ -98,7 +104,7 @@ const ConfigPrint = () => {
                 <div className='col-sm-6'>
                     <div className='row'>
                         <div className='col-3' id='print-button'>
-                            <button onClick={handlePrintButtonClick} className="print-button">Print</button>
+                            <button onClick={handlePrintButtonClick} className="print-button" disabled={!checkConfigs}>Print</button>
                         </div>
                         <div className='col-9' style={{paddingLeft: '2rem'}}>
                             <label htmlFor="numberCopy" style={{marginRight: '2rem'}}>Copy:</label>
@@ -152,7 +158,7 @@ const ConfigPrint = () => {
                         {/*    />*/}
                         {/*</div>*/}
                         {
-                            (selectedCustomPrint === "printselection") && (
+                            (selectedCustomPrint === "Print selection") && (
                                 <div className='col-10'>
                                     <div style={{ display: 'flex' }}>
                                         <input

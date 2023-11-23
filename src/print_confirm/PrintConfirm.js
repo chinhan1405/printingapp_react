@@ -4,13 +4,11 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import './PrintConfirm.css';
 const moment = require('moment');
 export function PrintConfirm() {
-    const handleClickPrint = () => {
-        console.log('Hit print');
-    }
     const location = useLocation();
     const [documents, setDocuments] = useState([]);
     const [printconfigs, setConfigs] = useState(null);
     const [total_pages, setTotalPages] = useState(0)
+    const navigate = useNavigate();
     useEffect(() => {
         fetch(configs.baseAPI + configs.getSelectedDocAPI)
             .then(response => response.json())
@@ -23,15 +21,58 @@ export function PrintConfirm() {
                 setTotalPages(total);
             })
             .catch(error => console.error('Error fetching documents:', error));
-        console.log(configs.baseAPI + configs.getPrtConfigByIDAPI + location.state);
-        fetch(configs.baseAPI + configs.getPrtConfigByIDAPI + location.state)
+        setConfigs(location.state);
+    }, []);
+    const handleClickPrint = () => {
+        fetch(configs.baseAPI + configs.createPrtConfigAPI, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(printconfigs),
+        })
             .then(response => response.json())
             .then(data => {
-                setConfigs(data.data);
-                console.log(printconfigs);
+                documents.forEach((document) => {
+                    let history = {
+                        document_id: document._id,
+                        config_id: data.data._id,
+                        finish_date: new Date('2023-11-30'),
+                    }
+                    document.status = "inorder"
+                    fetch(configs.baseAPI + configs.updateDocByIdAPI + document._id, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(document),
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data);
+                        })
+                        .catch(error => console.error('Error updating document:', error));
+
+
+                    fetch(configs.baseAPI + configs.createHistoryAPI, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(history),
+                    })
+                        .then(response => response.json(history))
+                        .then(data => {
+                            console.log(data);
+                        })
+                        .catch(error => console.error('Error updating document:', error));
+                })
+
             })
-            .catch(error => console.error('Error fetching configs:', error));
-    }, []);
+            .catch(error => console.error('Error updating document:', error));
+        navigate('/printtrack/');
+        window.location.reload();
+    }
     return (
         <div className="container" style={{maxWidth: '90%', marginBottom: '10vh'}}>
             <div className="row">
