@@ -42,6 +42,7 @@ export default function TrackTab() {
                 
             })
             .catch(error => console.error('Error fetching documents:', error));
+        console.log(histories);
     }, [value]);
 
   return (
