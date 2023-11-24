@@ -96,7 +96,7 @@ export default function Documents() {
                             return <div key={index} className="col-xl-4 col-md-6 col-sm-12">
                                     <DocumentCard
                                     name={document.name}
-                                    date={moment(document.date).format('DD/MM/YYYY')}
+                                    date={moment(document.created_at).format('DD/MM/YYYY')}
                                     pages={document.pages}
                                     selected={document.status === "selected"}
                                     onSelect={() => handleSelect(index)}
