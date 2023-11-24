@@ -19,6 +19,7 @@ const ConfigPrint = () => {
     const navigate = useNavigate();
 
     const checkConfig = () => {
+        console.log([selectedPrinter, numberCopy, selectedCustomPrint, selectedPrintSide, selectedOrientation, selectedSizePage, selectedMarginPage, selectedSheetPage]);
         selectedCheckConfigs((selectedPrinter !== "Nothing") && (numberCopy !== "Nothing") &&
             (selectedCustomPrint !== "Nothing") && (selectedPrintSide !== "Nothing") &&
             (selectedOrientation !== "Nothing") && (selectedSizePage !== "Nothing") &&
@@ -26,51 +27,43 @@ const ConfigPrint = () => {
     };
     const handlePrinterChange = (event) => {
         setSelectedPrinter(event.target.value);
-        checkConfig();
     };
 
     const handleCustomPrintChange = (event) => {
         setSelectedCustomPrint(event.target.value);
-        checkConfig();
+
     };
 
     const handlePrintSideChange = (event) => {
         setSelectedPrintSide(event.target.value);
-        checkConfig();
+
     };
 
     const handleFirstNumberPageChange = (event) => {
         setFirstNumberPage(event.target.value);
-        checkConfig();
     };
     const handleSecondNumberPageChange = (event) => {
         setSecondNumberPage(event.target.value);
-        checkConfig();
     };
 
     const handleCollectedChange = (event) => {
         setSelectedCollated(event.target.value);
-        checkConfig();
     };
 
     const handleOrientationChange = (event) => {
         setSelectedOrientation(event.target.value);
-        checkConfig();
     };
 
     const handleSizePageChange = (event) => {
         setSelectedSizePage(event.target.value);
-        checkConfig();
     };
 
     const handleMarginPageChange = (event) => {
         setSelectedMarginPage(event.target.value);
-        checkConfig();
     };
 
     const handleSheetPageChange = (event) => {
         setSelectedSheetPage(event.target.value);
-        checkConfig();
     };
 
     const handlePrintButtonClick = () => {
@@ -96,15 +89,16 @@ const ConfigPrint = () => {
             document.getElementById('secondNumberPage').min = firstNumberPage;
             setSecondNumberPage(firstNumberPage);
         }
+        checkConfig();
             
-    }, [firstNumberPage]);
+    }, [firstNumberPage, selectedPrinter, numberCopy, selectedCustomPrint, selectedPrintSide, selectedOrientation, selectedSizePage, selectedMarginPage, selectedSheetPage]);
     return (
         <div className='container d-flex flex-column py-4 py-xl-5'>
             <div className='row '>
                 <div className='col-sm-6'>
                     <div className='row'>
                         <div className='col-3' id='print-button'>
-                            <button onClick={handlePrintButtonClick} className="print-button" disabled={!checkConfigs}>Print</button>
+                            <button onClick={handlePrintButtonClick} className={((checkConfigs)? "enabled":"disabled")+"-print-button"} disabled={!checkConfigs}>Print</button>
                         </div>
                         <div className='col-9' style={{paddingLeft: '2rem'}}>
                             <label htmlFor="numberCopy" style={{marginRight: '2rem'}}>Copy:</label>
