@@ -1,5 +1,6 @@
 const configs = {
-    baseAPI: "http://localhost:8080",
+    //baseAPI: "http://localhost:8080",
+    baseAPI: "https://ssps-api.onrender.com",
     getAllDocAPI :"/documents/",
     getSelectedDocAPI: "/documents/selected/",
     updateDocByIdAPI: "/documents/update/",
