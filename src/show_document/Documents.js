@@ -80,13 +80,29 @@ export default function Documents() {
     const handleBackHome = () => {
         navigate('/')
     }
+
+    const handleUpload = () => {
+        const fileUpload = document.getElementById('fileUpload');
+        fileUpload.click();
+
+        const file = fileUpload.files[0];
+        console.log(file);
+
+        
+    }
+
     return (
         <div style={{marginBottom: '10vh'}}>
             <div className="container" style={{marginTop: '2rem'}}>
                 <div className="row">
                     <div className="col-md-4 d-flex d-md-flex justify-content-center align-self-center justify-content-md-center func-button"><button className="btn btn-info" type="button" onClick={handleBackHome}>Trang chủ</button></div>
                     <div className="col-md-4 d-flex d-md-flex justify-content-center justify-content-md-center func-button"><button className="btn btn-info" type="button" onClick={handlePrintSelected} disabled={!selected}>In tài liệu đã chọn</button></div>
-                    <div className="col-md-4 d-flex d-lg-flex justify-content-center justify-content-lg-center func-button"><button className="btn btn-info" type="button" style={{marginLeft: '0px'}}>+&nbsp; Tải lên tài liệu mới</button></div>
+                    <div className="col-md-4 d-flex d-lg-flex justify-content-center justify-content-lg-center func-button">
+                        <button className="btn btn-info" type="button" onClick={handleUpload} style={{marginLeft: '0px'}}>
+                            <input type="file" name="file" id="fileUpload" accept='.pdf,.docx' hidden />
+                            +&nbsp; Tải lên tài liệu mới
+                        </button>
+                    </div>
                 </div>
             </div>
             <div className='container' style={{maxWidth: '90%'}}>
