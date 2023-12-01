@@ -56,6 +56,11 @@ export default function Documents() {
             alert('Vui lòng chọn ít nhất một tài liệu.');
         }
     };
+
+    const handleDeleteDocument = () => {
+
+    }
+
     const handleQuickPrint = (index) => {
         const updatedDocuments = [...documents];
         updatedDocuments[index].status = "selected"
@@ -87,17 +92,16 @@ export default function Documents() {
 
         const file = fileUpload.files[0];
         console.log(file);
-
-        
     }
 
     return (
         <div style={{marginBottom: '10vh'}}>
             <div className="container" style={{marginTop: '2rem'}}>
                 <div className="row">
-                    <div className="col-md-4 d-flex d-md-flex justify-content-center align-self-center justify-content-md-center func-button"><button className="btn btn-info" type="button" onClick={handleBackHome}>Trang chủ</button></div>
-                    <div className="col-md-4 d-flex d-md-flex justify-content-center justify-content-md-center func-button"><button className="btn btn-info" type="button" onClick={handlePrintSelected} disabled={!selected}>In tài liệu đã chọn</button></div>
-                    <div className="col-md-4 d-flex d-lg-flex justify-content-center justify-content-lg-center func-button">
+                    <div className="col-md-3 d-flex d-md-flex justify-content-center align-self-center justify-content-md-center func-button"><button className="btn btn-info" type="button" onClick={handleBackHome}>Trang chủ</button></div>
+                    <div className="col-md-3 d-flex d-md-flex justify-content-center justify-content-md-center func-button"><button className="btn btn-info" type="button" onClick={handleDeleteDocument} disabled={!selected}>Xóa tài liệu đã chọn</button></div>
+                    <div className="col-md-3 d-flex d-md-flex justify-content-center justify-content-md-center func-button"><button className="btn btn-info" type="button" onClick={handlePrintSelected} disabled={!selected}>In tài liệu đã chọn</button></div>
+                    <div className="col-md-3 d-flex d-lg-flex justify-content-center justify-content-lg-center func-button">
                         <button className="btn btn-info" type="button" onClick={handleUpload} style={{marginLeft: '0px'}}>
                             <input type="file" name="file" id="fileUpload" accept='.pdf,.docx' hidden />
                             +&nbsp; Tải lên tài liệu mới
@@ -135,7 +139,7 @@ function DocumentCard({ name, date, pages, selected, onSelect, onPrint }) {
             <div className="card-body" style={{background: '#2d3638', borderRadius: '20px'}}>
                 <div className="row align-items-center">
                     <div className="col-4">
-                        <img className="card-image" src="img/tutor.jpg" alt="thumbnail"/>
+                        <img className="card-image" src="img/pdf.png" alt="thumbnail"/>
                     </div>
                     <div className="col-8 align-items-center">
                         <div className = "d-flex flex-column">
