@@ -117,7 +117,6 @@ const ConfigPrint = () => {
                             <label htmlFor="printer" className="daudong">Printer:</label>
                             <div className="config-box">
                                 <select id="printer" value={selectedPrinter} onChange={handlePrinterChange} className="custom-select">
-                                    <option value="Nohing" hidden>{" "}</option>
                                     <option value="Fax">Fax</option>
                                     <option value="Print to PDF">Print to PDF</option>
                                     <option value="Onenote">Onenote</option>
@@ -128,10 +127,7 @@ const ConfigPrint = () => {
                             <label htmlFor="customprint" className="daudong" style={{marginTop: '1rem'}}>Settings:</label>
                             <div className="config-box">
                                 <select id="customprint" value={selectedCustomPrint} onChange={handleCustomPrintChange} className="custom-select">
-                                    <option value="Nohing" hidden>{" "}</option>
                                     <option value="Print all Pages">Print all Pages</option>
-                                    <option value="Print selection">Print selection</option>
-                                    <option value="Print current page">Print current page</option>
                                     <option value="Custom print">Custom print</option>
                                 </select>
                             </div>
@@ -184,16 +180,14 @@ const ConfigPrint = () => {
                         <div className='col-12'>
                             <div className="config-box">
                                 <select id="printside" value={selectedPrintSide} onChange={handlePrintSideChange} className="custom-select">
-                                    <option value="Nohing" hidden>{" "}</option>
                                     <option value="Print One Sided">Print One Sided</option>
-                                    <option value="Manually Print on Both Sides">Manually Print on Both Sides</option>
+                                    <option value="Manually Print on Both Sides">Print on Both Sides</option>
                                 </select>
                             </div>
                         </div>
                         <div className='col-12'>
                             <div className="config-box">
                                 <select id="orientation" value={selectedOrientation} onChange={handleOrientationChange} className="custom-select">
-                                    <option value="Nohing" hidden>{" "}</option>
                                     <option value="Portrait Orientation">Portrait Orientation</option>
                                     <option value="Landscape Orientation">Landscape Orientation</option>
                                 </select>
@@ -202,7 +196,6 @@ const ConfigPrint = () => {
                         <div className='col-12'>
                             <div className="config-box">
                                 <select id="pagesize" value={selectedSizePage} onChange={handleSizePageChange} className="custom-select">
-                                    <option value="Nohing" hidden>{" "}</option>
                                     <option value="Letter">Letter</option>
                                     <option value="Tabloid">Tabloid</option>
                                     <option value="Legal">Legal</option>
@@ -217,7 +210,6 @@ const ConfigPrint = () => {
                         <div className='col-12'>
                             <div className="config-box">
                                 <select id="pagemargin" value={selectedMarginPage} onChange={handleMarginPageChange} className="custom-select">
-                                    <option value="Nohing" hidden>{" "}</option>
                                     <option value="Norml Margin">Norml Margin</option>
                                     <option value="Narrow Margin">Narrow Margin</option>
                                     <option value="Moderate Margin">Moderate Margin</option>
@@ -229,7 +221,6 @@ const ConfigPrint = () => {
                         <div className='col-12'>
                             <div className="config-box">
                                 <select id="sheetpage" value={selectedSheetPage} onChange={handleSheetPageChange} className="custom-select">
-                                    <option value="Nohing" hidden>{" "}</option>
                                     <option value="1 Page Per Sheet">1 Page Per Sheet</option>
                                     <option value="2 Page Per Sheet">2 Page Per Sheet</option>
                                     <option value="4 Page Per Sheet">4 Page Per Sheet</option>
