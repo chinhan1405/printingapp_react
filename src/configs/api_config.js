@@ -1,9 +1,11 @@
 const configs = {
     //baseAPI: "http://localhost:8080",
     baseAPI: "https://ssps-api.onrender.com",
-    getAllDocAPI :"/documents/",
+    getAllDocAPI: "/documents/",
+    createDocAPI: "/documents/create/",
     getSelectedDocAPI: "/documents/selected/",
     updateDocByIdAPI: "/documents/update/",
+    downloadDocAPI: "/documents/download/",
     createPrtConfigAPI: "/printconfig/create/",
     getPrtConfigByIdAPI: "/printconfig/",
     delPrtConfigByIdAPI: "/printconfig/delete/",
