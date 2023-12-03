@@ -29,7 +29,7 @@ function AccountButton(params) {
     return (
         <>
             <p className="nav-item navbar-nav navbar-item">Trang còn lại: 1000</p>
-            <img className="rounded-circle" src={"img/" + params.avatar}
+            <img className="rounded-circle" src={"../img/" + params.avatar}
             width="40rem" height="40rem" 
             background-color="white"
             alt={params.name} />
