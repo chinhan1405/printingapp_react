@@ -98,7 +98,6 @@ export default function Documents() {
         if (file) {
             setUploading(true);
             try {
-                console.log(file);
                 let formData = new FormData();
                 formData.append('file', file);
                 fetch(configs.baseAPI + configs.createDocAPI, {
@@ -158,7 +157,7 @@ export default function Documents() {
                         documents.map((document, index) => {
                             return <div key={index} className="col-xl-4 col-md-6 col-sm-12">
                                     <DocumentCard
-                                    name={decodeURIComponent(escape(document.name))}
+                                    name={document.name}
                                     format={document.format}
                                     date={moment(document.created_at).format('DD/MM/YYYY')}
                                     pages={document.pages}

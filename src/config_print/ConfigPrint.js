@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ConfigPrint.css';
 import { useNavigate } from 'react-router-dom';
-import configs from '../configs/api_config';
 
 const ConfigPrint = () => {
     const [selectedPrinter, setSelectedPrinter] = useState("Nothing");
