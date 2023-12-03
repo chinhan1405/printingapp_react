@@ -2,12 +2,13 @@ import './Documents.css';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import configs from '../configs/api_config';
-
 const moment = require('moment');
 export default function Documents() {
     const [documents, setDocuments] = useState([]);
     const navigate = useNavigate();
     const [selected, setSelected] = useState(false);
+    const [upload, setUpload] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         fetch(configs.baseAPI + configs.getAllDocAPI)
@@ -85,14 +86,43 @@ export default function Documents() {
     const handleBackHome = () => {
         navigate('/')
     }
-
+    const handleDownload = (index) => {
+        const fileId = documents[index].fileId;
+        const linkDownload = configs.baseAPI + configs.downloadDocAPI + fileId;
+        const newTab = window.open(linkDownload, '_blank');
+        newTab.focus();
+    };
     const handleUpload = () => {
         const fileUpload = document.getElementById('fileUpload');
-        fileUpload.click();
-
         const file = fileUpload.files[0];
-        console.log(file);
-    }
+        if (file) {
+            setUploading(true);
+            try {
+                let formData = new FormData();
+                formData.append('file', file);
+                fetch(configs.baseAPI + configs.createDocAPI, {
+                    method: "POST",
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        setUploading(false);
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error uploading file: ', error);
+                        setUploading(false);
+                    });
+            } catch (error) {
+                console.error('Error during file read:', error);
+                setUploading(false);
+            }
+        }
+    };
+
+    const togglePopup = () => {
+        setUpload(!upload);
+    };
 
     return (
         <div style={{marginBottom: '10vh'}}>
@@ -102,13 +132,25 @@ export default function Documents() {
                     <div className="col-md-3 d-flex d-md-flex justify-content-center justify-content-md-center func-button"><button className="btn btn-info" type="button" onClick={handleDeleteDocument} disabled={!selected}>Xóa tài liệu đã chọn</button></div>
                     <div className="col-md-3 d-flex d-md-flex justify-content-center justify-content-md-center func-button"><button className="btn btn-info" type="button" onClick={handlePrintSelected} disabled={!selected}>In tài liệu đã chọn</button></div>
                     <div className="col-md-3 d-flex d-lg-flex justify-content-center justify-content-lg-center func-button">
-                        <button className="btn btn-info" type="button" onClick={handleUpload} style={{marginLeft: '0px'}}>
-                            <input type="file" name="file" id="fileUpload" accept='.pdf,.docx' hidden />
+                        <button className="btn btn-info" type="button" onClick={togglePopup} style={{ marginLeft: '0px' }} disabled={upload}>
                             +&nbsp; Tải lên tài liệu mới
                         </button>
                     </div>
                 </div>
             </div>
+            {upload && (
+                <div className="centered-content-div">
+                    <div className="popup">
+                        <input type="file" name="file" id="fileUpload" accept=".pdf, .docx" />
+                        <button className="btn btn-info" type="button" onClick={handleUpload} disabled={uploading}>
+                            {uploading ? 'Đang tải lên...' : 'Tải lên'}
+                        </button>
+                        <button className="btn btn-secondary" type="button" onClick={togglePopup}>
+                            Đóng
+                        </button>
+                    </div>
+                </div>
+            )}
             <div className='container' style={{maxWidth: '90%'}}>
                 <div className='row'>
                     {
@@ -116,8 +158,10 @@ export default function Documents() {
                             return <div key={index} className="col-xl-4 col-md-6 col-sm-12">
                                     <DocumentCard
                                     name={document.name}
+                                    format={document.format}
                                     date={moment(document.created_at).format('DD/MM/YYYY')}
                                     pages={document.pages}
+                                    onDownload={() => handleDownload(index)}
                                     selected={document.status === "selected"}
                                     onSelect={() => handleSelect(index)}
                                     onPrint={() => handleQuickPrint(index)}
@@ -132,18 +176,42 @@ export default function Documents() {
 }
 
 
-function DocumentCard({ name, date, pages, selected, onSelect, onPrint }) {
-
+function DocumentCard({ name, format, date, pages, selected, onSelect, onPrint, onDownload }) {
+    const [isHovered, setIsHovered] = useState(false);
     return (
         <div className="card" style={{marginBottom: '2rem', border: 0}}>
             <div className="card-body" style={{background: '#2d3638', borderRadius: '20px'}}>
                 <div className="row align-items-center">
                     <div className="col-4">
-                        <img className="card-image" src="img/pdf.png" alt="thumbnail"/>
+                        <img className="card-image" src={(format === "pdf")? "img/pdf.png": "img/docx.png"} alt="thumbnail"/>
                     </div>
                     <div className="col-8 align-items-center">
                         <div className = "d-flex flex-column">
-                            <h4 className="card-title text-white mb-4">{name}</h4>
+                            <h4 className="card-title text-white mb-4"
+                                onClick={onDownload}
+                                onMouseEnter={() => setIsHovered(true)}
+                                onMouseLeave={() => setIsHovered(false)}
+                                style={{ position: 'relative', cursor: 'pointer' }}
+                            >
+                                {name}
+                                {isHovered && (
+                                    <span
+                                        style={{
+                                            position: 'absolute',
+                                            bottom: '-20px',
+                                            left: '50%',
+                                            transform: 'translateX(-50%)',
+                                            fontSize: '12px',
+                                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                            color: 'white',
+                                            padding: '4px',
+                                            borderRadius: '4px',
+                                        }}
+                                    >
+                                        Download
+                                    </span>
+                                )}
+                            </h4>
                             <p className="card-text text-white">Thời gian: {date}</p>
                             <p className="card-text text-white">Số trang: {pages}</p>
                             <div className="row">

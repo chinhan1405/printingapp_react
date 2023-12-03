@@ -13,3 +13,11 @@
     object-fit: cover;
     border-radius: 10px;
 }
+
+.centered-content-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px
+}
