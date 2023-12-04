@@ -1,25 +1,27 @@
 ﻿import React, { useState, useEffect } from 'react';
 import './ConfigPrint.css';
 import { useNavigate } from 'react-router-dom';
-
+import configs from '../configs/api_config';
 const ConfigPrint = () => {
-    const [selectedPrinter, setSelectedPrinter] = useState("Printer 1");
-    const [numberCopy, setNumberCopy] = useState(1);
-    const [selectedCustomPrint, setSelectedCustomPrint] = useState("Print all Pages");
+    const [printers, setPrinters] = useState([]);
+    const [selectedPrinter, setSelectedPrinter] = useState("Nothing");
+    const [numberCopy, setNumberCopy] = useState("Nothing");
+    const [selectedCustomPrint, setSelectedCustomPrint] = useState("Nothing");
     const [firstNumberPage, setFirstNumberPage] = useState(0);
     const [secondNumberPage, setSecondNumberPage] = useState(0);
-    const [selectedPrintSide, setSelectedPrintSide] = useState("Print One Sided");
+    const [selectedPrintSide, setSelectedPrintSide] = useState("Nothing");
     const [selectedCollated, setSelectedCollated] = useState("Nothing");
-    const [selectedOrientation, setSelectedOrientation] = useState("Portrait Orientation");
-    const [selectedSizePage, setSelectedSizePage] = useState("A4");
-    const [selectedMarginPage, setSelectedMarginPage] = useState("Normal Margin");
-    const [selectedSheetPage, setSelectedSheetPage] = useState("1 Page Per Sheet");
-    const [checkConfigs, selectedCheckConfigs] = useState(false);
+    const [selectedOrientation, setSelectedOrientation] = useState("Nothing");
+    const [selectedSizePage, setSelectedSizePage] = useState("Nothing");
+    const [selectedMarginPage, setSelectedMarginPage] = useState("Nothing");
+    const [selectedSheetPage, setSelectedSheetPage] = useState("Nothing");
+    const [checkConfigs, setCheckConfigs] = useState(false);
+    const [oneDoc, setOneDoc] = useState(false);
     const navigate = useNavigate();
 
     const checkConfig = () => {
         console.log([selectedPrinter, numberCopy, selectedCustomPrint, selectedPrintSide, selectedOrientation, selectedSizePage, selectedMarginPage, selectedSheetPage]);
-        selectedCheckConfigs((selectedPrinter !== "Nothing") && (numberCopy !== "Nothing") &&
+        setCheckConfigs((selectedPrinter !== "Nothing") && (numberCopy !== "Nothing") &&
             (selectedCustomPrint !== "Nothing") && (selectedPrintSide !== "Nothing") &&
             (selectedOrientation !== "Nothing") && (selectedSizePage !== "Nothing") &&
             (selectedMarginPage !== "Nothing") && (selectedSheetPage !== "Nothing"));
@@ -84,9 +86,39 @@ const ConfigPrint = () => {
         setNumberCopy(event.target.value);
     };
     useEffect(() => {
+        if (printers.length === 0) {
+            fetch(configs.baseAPI + configs.getPrinterAPI)
+                .then(response => response.json())
+                .then(data => { setPrinters(data.data) })
+                .catch(error => console.error('Error fetching printers:', error));
+        }
         if (document.getElementById('secondNumberPage')) {
             document.getElementById('secondNumberPage').min = firstNumberPage;
-            setSecondNumberPage(firstNumberPage);
+            if (document.getElementById('secondNumberPage').value || document.getElementById('secondNumberPage').value < document.getElementById('firstNumberPage').value)
+                setSecondNumberPage(firstNumberPage);
+        }
+        if ((selectedPrinter === "Nothing") && (numberCopy === "Nothing") &&
+            (selectedCustomPrint === "Nothing") && (selectedPrintSide === "Nothing") &&
+            (selectedOrientation === "Nothing") && (selectedSizePage === "Nothing") &&
+            (selectedMarginPage === "Nothing") && (selectedSheetPage === "Nothing")) {
+            fetch(configs.baseAPI + configs.getSelectedDocAPI)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.data.length);
+                    if (data.data.length === 1) {
+                        setOneDoc(true);
+                        if (document.getElementById('secondNumberPage')) {
+                            document.getElementById('secondNumberPage').max = data.data.pages;
+                            document.getElementById('firstNumberPage').max = data.data.pages;
+
+                        }
+                    } else {
+                        setOneDoc(false);
+                        document.getElementById('customprint').value = 'Print all Pages';
+                        setSelectedCustomPrint('Print all Pages');
+                    }
+                })
+                .catch(error => console.error('Error fetching documents:', error));
         }
         checkConfig();
 
@@ -97,11 +129,7 @@ const ConfigPrint = () => {
                 <div className='col-sm-6'>
                     <div className='row'>
                         <div className='col-3' id='print-button'>
-<<<<<<< HEAD
                             <button onClick={handlePrintButtonClick} className={((checkConfigs) ? "enabled" : "disabled") + "-print-button"} disabled={!checkConfigs}>Print</button>
-=======
-                            <button onClick={handlePrintButtonClick} className={((checkConfigs)? "enabled":"disabled")+"-print-button"} disabled={!checkConfigs}>In tài liệu</button>
->>>>>>> 7fb9c63cccfb5b04f5713a69c07f441d3d3902b0
                         </div>
                         <div className='col-9' style={{ paddingLeft: '2rem' }}>
                             <label htmlFor="numberCopy" style={{ marginRight: '2rem' }}>Copy:</label>
@@ -120,46 +148,29 @@ const ConfigPrint = () => {
                             <label htmlFor="printer" className="daudong">Printer:</label>
                             <div className="config-box">
                                 <select id="printer" value={selectedPrinter} onChange={handlePrinterChange} className="custom-select">
-<<<<<<< HEAD
-                                    <option value="Fax">Fax</option>
-                                    <option value="Print to PDF">Print to PDF</option>
-                                    <option value="Onenote">Onenote</option>
-=======
-                                    <option value="Printer 1">Printer 1</option>
-                                    <option value="Printer 2">Printer 2</option>
-                                    <option value="Printer 3">Printer 3</option>
->>>>>>> 7fb9c63cccfb5b04f5713a69c07f441d3d3902b0
+                                    <option value="Nohing" hidden>{" "}</option>
+                                    {
+                                        printers.map((printer, index) => {
+                                            const printer_text = "Máy " + printer.code + ", Loại: " + printer.type + ", Cơ sở: " + printer.campus + ", Tòa: " + printer.building + ", Tầng: " + printer.level;
+                                            return <option key={index} value={printer._id}>{printer_text}</option>
+                                        })
+                                    }
                                 </select>
                             </div>
                         </div>
                         <div className='col-12'>
                             <label htmlFor="customprint" className="daudong" style={{ marginTop: '1rem' }}>Settings:</label>
                             <div className="config-box">
-                                <select id="customprint" value={selectedCustomPrint} onChange={handleCustomPrintChange} className="custom-select">
+                                <select id="customprint" value={selectedCustomPrint} onChange={handleCustomPrintChange} className="custom-select" disabled={!oneDoc}>
+                                    <option value="Nohing" hidden>{" "}</option>
                                     <option value="Print all Pages">Print all Pages</option>
-<<<<<<< HEAD
-                                    <option value="Custom print">Custom print</option>
-=======
-                                    <option value="Print selection">Custom print</option>
->>>>>>> 7fb9c63cccfb5b04f5713a69c07f441d3d3902b0
+                                    <option value="Print selection">Print selection</option>
                                 </select>
                             </div>
                         </div>
                         <div className='col-2'>
                             <label htmlFor="numberPage">Pages:</label>
                         </div>
-                        {/*<div className='col-10'>*/}
-                        {/*    <input*/}
-                        {/*        type="number"*/}
-                        {/*        id="numberPage"*/}
-                        {/*        value={numberPage}*/}
-                        {/*        onChange={handleNumberPageChange}*/}
-                        {/*        className="custom-input"*/}
-                        {/*        min="0"*/}
-                        {/*        step="1"*/}
-                        {/*        style={{ marginBottom: '1rem'}}*/}
-                        {/*    />*/}
-                        {/*</div>*/}
                         {
                             (selectedCustomPrint === "Print selection") && (
                                 <div className='col-10'>
@@ -171,6 +182,7 @@ const ConfigPrint = () => {
                                             onChange={handleFirstNumberPageChange}
                                             className="custom-input"
                                             min="1"
+                                            max="1"
                                             step="1"
                                             style={{ width: '4rem', marginRight: '0.2rem', marginBottom: '1rem' }}
                                         />
@@ -182,6 +194,7 @@ const ConfigPrint = () => {
                                             onChange={handleSecondNumberPageChange}
                                             className="custom-input"
                                             min={toString(firstNumberPage)}
+                                            max="1"
                                             step="1"
                                             style={{ width: '4rem', marginLeft: '0.2rem', marginBottom: '1rem' }}
                                         />
@@ -193,14 +206,16 @@ const ConfigPrint = () => {
                         <div className='col-12'>
                             <div className="config-box">
                                 <select id="printside" value={selectedPrintSide} onChange={handlePrintSideChange} className="custom-select">
+                                    <option value="Nohing" hidden>{" "}</option>
                                     <option value="Print One Sided">Print One Sided</option>
-                                    <option value="Manually Print on Both Sides">Print on Both Sides</option>
+                                    <option value="Manually Print on Both Sides">Manually Print on Both Sides</option>
                                 </select>
                             </div>
                         </div>
                         <div className='col-12'>
                             <div className="config-box">
                                 <select id="orientation" value={selectedOrientation} onChange={handleOrientationChange} className="custom-select">
+                                    <option value="Nohing" hidden>{" "}</option>
                                     <option value="Portrait Orientation">Portrait Orientation</option>
                                     <option value="Landscape Orientation">Landscape Orientation</option>
                                 </select>
@@ -209,30 +224,26 @@ const ConfigPrint = () => {
                         <div className='col-12'>
                             <div className="config-box">
                                 <select id="pagesize" value={selectedSizePage} onChange={handleSizePageChange} className="custom-select">
-<<<<<<< HEAD
+                                    <option value="Nohing" hidden>{" "}</option>
                                     <option value="Letter">Letter</option>
                                     <option value="Tabloid">Tabloid</option>
                                     <option value="Legal">Legal</option>
                                     <option value="Executive">Executive</option>
                                     <option value="A3">A3</option>
-=======
->>>>>>> 7fb9c63cccfb5b04f5713a69c07f441d3d3902b0
                                     <option value="A4">A4</option>
-                                    <option value="A3">A3</option>
+                                    <option value="B4(JIS)">B4(JIS)</option>
+                                    <option value="B5(JIS)">B5(JIS)</option>
                                 </select>
                             </div>
                         </div>
                         <div className='col-12'>
                             <div className="config-box">
                                 <select id="pagemargin" value={selectedMarginPage} onChange={handleMarginPageChange} className="custom-select">
-<<<<<<< HEAD
-                                    <option value="Norml Margin">Norml Margin</option>
-=======
-                                    <option value="Normal Margin">Normal Margin</option>
->>>>>>> 7fb9c63cccfb5b04f5713a69c07f441d3d3902b0
+                                    <option value="Nohing" hidden>{" "}</option>
+                                    <option value="Normal Margin">Norml Margin</option>
                                     <option value="Narrow Margin">Narrow Margin</option>
                                     <option value="Moderate Margin">Moderate Margin</option>
-                                    <option value="Wide Margin">Wide Margin</option>
+                                    <option value="wide Margin">wide Margin</option>
                                     <option value="Mirrored Margin">Mirrored Margin</option>
                                 </select>
                             </div>
@@ -240,24 +251,20 @@ const ConfigPrint = () => {
                         <div className='col-12'>
                             <div className="config-box">
                                 <select id="sheetpage" value={selectedSheetPage} onChange={handleSheetPageChange} className="custom-select">
+                                    <option value="Nohing" hidden>{" "}</option>
                                     <option value="1 Page Per Sheet">1 Page Per Sheet</option>
-                                    <option value="2 Pages Per Sheet">2 Pages Per Sheet</option>
-                                    <option value="4 Pages Per Sheet">4 Pages Per Sheet</option>
-                                    <option value="6 Pages Per Sheet">6 Pages Per Sheet</option>
-                                    <option value="8 Pages Per Sheet">8 Pages Per Sheet</option>
-                                    <option value="16 Pages Per Sheet">16 Pages Per Sheet</option>
+                                    <option value="2 Page Per Sheet">2 Page Per Sheet</option>
+                                    <option value="4 Page Per Sheet">4 Page Per Sheet</option>
+                                    <option value="6 Page Per Sheet">6 Page Per Sheet</option>
+                                    <option value="8 Page Per Sheet">8 Page Per Sheet</option>
+                                    <option value="16 Page Per Sheet">16 Page Per Sheet</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div>
-<<<<<<< HEAD
                 <div className='col-sm-6' style={{ textAlign: 'center' }}>
                     <img id='thumbnail-image' className='d-flex' src='https://random.imagecdn.app/100/160' alt='thumbnail' />
-=======
-                <div className='col-sm-6' style={{textAlign: 'center'}}>
-                    <img id='thumbnail-image' className='d-flex' src='../img/pdf.png' alt='thumbnail' />
->>>>>>> 7fb9c63cccfb5b04f5713a69c07f441d3d3902b0
                 </div>
             </div>
         </div>
