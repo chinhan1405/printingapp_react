@@ -1,6 +1,7 @@
 import './Navbar.css';
-
+import { useGlobalState } from '../GlobalStateContext';
 export default function Navbar() {
+    const { globalVariable, setGlobalVariable } = useGlobalState();
     return (
         <nav id='navbar' className="navbar navbar-light navbar-expand-md py-3 sticky-top">
             <div className="container"><a className="navbar-brand d-flex align-items-center" href="/"><img src="img/logo.png" width="40rem" height="40rem" alt='logo'/><strong style={{paddingLeft: '1rem'}}>SSPS</strong></a><button data-toggle="collapse" className="navbar-toggler" data-target="#navcol-1"><span className="sr-only">Toggle navigation</span><span className="navbar-toggler-icon"></span></button>
@@ -12,7 +13,7 @@ export default function Navbar() {
                         <li className="nav-item navbar-item"><a className="nav-link" href="/documents">In tài liệu</a></li>
                         <li className="nav-item navbar-item"><a className="nav-link" href="/printtrack">Lịch sử in</a></li>
                     </ul>
-                    <AccountButton name="Nhan" avatar="hcmut.jpg" />
+                    <AccountButton name={globalVariable.name} avatar={globalVariable.avatar} balance={globalVariable.balance} />
                 </div>
             </div>
         </nav>
@@ -28,7 +29,7 @@ function LoginButton() {
 function AccountButton(params) {
     return (
         <>
-            <p className="nav-item navbar-nav navbar-item">Trang còn lại: 1000</p>
+            <p className="nav-item navbar-nav navbar-item">{"Trang còn lại: " + params.balance}</p>
             <img className="rounded-circle" src={"../img/" + params.avatar}
             width="40rem" height="40rem" 
             background-color="white"
