@@ -5,6 +5,7 @@ const configs = {
     createDocAPI: "/documents/create/",
     getSelectedDocAPI: "/documents/selected/",
     updateDocByIdAPI: "/documents/update/",
+    deleteDocAPI: "/documents/delete/",
     downloadDocAPI: "/documents/download/",
     createPrtConfigAPI: "/printconfig/create/",
     getPrtConfigByIdAPI: "/printconfig/",
@@ -13,6 +14,7 @@ const configs = {
     getHisByStatusAPI: '/history/status/',
     getHisByIdAPI: '/history/',
     delHisByIdAPI: "/history/delete/",
+    getPrinterAPI: "/printer/",
 
 
 }
