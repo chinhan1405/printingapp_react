@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import configs from '../configs/api_config';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useGlobalState } from '../GlobalStateContext';
 import './PrintConfirm.css';
 const moment = require('moment');
 export function PrintConfirm() {
+    const { globalVariable, setGlobalVariable } = useGlobalState();
     const location = useLocation();
     const [documents, setDocuments] = useState([]);
     const [printer, setPrinter] = useState(null);
@@ -23,7 +25,7 @@ export function PrintConfirm() {
                         total += element.pages;
                     })
                 }
-                setTotalPages(total);
+                setTotalPages(total * location.state.copies);
             })
             .catch(error => console.error('Error fetching documents:', error));
         setConfigs(location.state);
@@ -36,52 +38,62 @@ export function PrintConfirm() {
 
     }, []);
     const handleClickPrint = () => {
-        fetch(configs.baseAPI + configs.createPrtConfigAPI, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(printconfigs),
-        })
-            .then(response => response.json())
-            .then(data => {
-                documents.forEach((document) => {
-                    let history = {
-                        document_id: document._id,
-                        config_id: data.data._id,
-                        finish_date: new Date('2023-11-30'),
-                    }
-                    document.status = "inorder"
-                    fetch(configs.baseAPI + configs.updateDocByIdAPI + document._id, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(document),
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log(data);
-                        })
-                        .catch(error => console.error('Error updating document:', error));
 
-                    fetch(configs.baseAPI + configs.createHistoryAPI, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(history),
-                    })
-                        .then(response => response.json(history))
-                        .then(data => {
-                            navigate('/printtrack/');
-                            window.location.reload();
-                        })
-                        .catch(error => console.error('Error updating document:', error));
-                })
-
+        if (globalVariable.balance < total_pages) {
+            alert('Số dư không đủ, hãy mua thêm giấy để tiếp tục!');
+            return
+        } else {
+            fetch(configs.baseAPI + configs.createPrtConfigAPI, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(printconfigs),
             })
-            .catch(error => console.error('Error updating document:', error));
+                .then(response => response.json())
+                .then(data => {
+                    documents.forEach((document) => {
+                        let history = {
+                            document_id: document._id,
+                            config_id: data.data._id,
+                            finish_date: new Date('2023-11-30'),
+                        }
+                        document.status = "inorder"
+                        fetch(configs.baseAPI + configs.updateDocByIdAPI + document._id, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(document),
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(data);
+                            })
+                            .catch(error => console.error('Error updating document:', error));
+
+                        fetch(configs.baseAPI + configs.createHistoryAPI, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(history),
+                        })
+                            .then(response => response.json(history))
+                            .then(data => {
+                                navigate('/printtrack/');
+                                setGlobalVariable({
+                                    name: globalVariable.name,
+                                    avatar: globalVariable.avatar,
+                                    balance: globalVariable.balance - total_pages
+                                })
+                            })
+                            .catch(error => console.error('Error updating document:', error));
+                    })
+
+                })
+                .catch(error => console.error('Error updating document:', error));
+        }
     }
     return (
         <div className="container" style={{maxWidth: '90%', marginBottom: '10vh'}}>

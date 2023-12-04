@@ -15,6 +15,8 @@ const configs = {
     getHisByIdAPI: '/history/',
     delHisByIdAPI: "/history/delete/",
     getPrinterAPI: "/printer/",
+    getUserAPI: "/user/",
+    updateUserAPI: "/user/update/",
 
 
 }
