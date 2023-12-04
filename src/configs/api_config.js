@@ -1,6 +1,6 @@
 const configs = {
-    baseAPI: "http://localhost:8080",
-    //baseAPI: "https://ssps-api.onrender.com",
+    //baseAPI: "http://localhost:8080",
+    baseAPI: "https://ssps-api.onrender.com",
     getAllDocAPI: "/documents/",
     createDocAPI: "/documents/create/",
     getSelectedDocAPI: "/documents/selected/",
@@ -14,6 +14,7 @@ const configs = {
     getHisByStatusAPI: '/history/status/',
     getHisByIdAPI: '/history/',
     delHisByIdAPI: "/history/delete/",
+    getPrinterAPI: "/printer/",
 
 
 }
