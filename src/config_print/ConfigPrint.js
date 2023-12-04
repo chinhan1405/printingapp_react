@@ -16,6 +16,7 @@ const ConfigPrint = () => {
     const [selectedMarginPage, setSelectedMarginPage] = useState("Normal Margin");
     const [selectedSheetPage, setSelectedSheetPage] = useState("1 Page Per Sheet");
     const [oneDoc, setOneDoc] = useState(false);
+    const [maxPages, setMaxPages] = useState(0);
     const navigate = useNavigate();
 
     const handlePrinterChange = (event) => {
@@ -24,6 +25,10 @@ const ConfigPrint = () => {
 
     const handleCustomPrintChange = (event) => {
         setSelectedCustomPrint(event.target.value);
+        if (event.target.value === "Print all Pages") {
+            setFirstNumberPage(1);
+            setSecondNumberPage(maxPages);
+        }
 
     };
 
@@ -96,11 +101,10 @@ const ConfigPrint = () => {
                     console.log(data.data.length);
                     if (data.data.length === 1) {
                         setOneDoc(true);
-                        if (document.getElementById('secondNumberPage')) {
-                            document.getElementById('secondNumberPage').max = data.data.pages;
-                            document.getElementById('firstNumberPage').max = data.data.pages;
+                        setMaxPages(data.data[0].pages);
+                        setFirstNumberPage(1);
+                        setSecondNumberPage(data.data[0].pages);
 
-                        }
                     } else {
                         setOneDoc(false);
                         document.getElementById('customprint').value = 'Print all Pages';
@@ -110,7 +114,7 @@ const ConfigPrint = () => {
                 .catch(error => console.error('Error fetching documents:', error));
         }
 
-    }, [firstNumberPage]);
+    }, [firstNumberPage, secondNumberPage]);
     return (
         <div className='container d-flex flex-column py-4 py-xl-5'>
             <div className='row '>
@@ -170,7 +174,7 @@ const ConfigPrint = () => {
                                             onChange={handleFirstNumberPageChange}
                                             className="custom-input"
                                             min="1"
-                                            max="1"
+                                            max={toString(maxPages)}
                                             step="1"
                                             style={{ width: '4rem', marginRight: '0.2rem', marginBottom: '1rem' }}
                                         />
@@ -182,7 +186,7 @@ const ConfigPrint = () => {
                                             onChange={handleSecondNumberPageChange}
                                             className="custom-input"
                                             min={toString(firstNumberPage)}
-                                            max="1"
+                                            max={toString(maxPages)}
                                             step="1"
                                             style={{ width: '4rem', marginLeft: '0.2rem', marginBottom: '1rem' }}
                                         />

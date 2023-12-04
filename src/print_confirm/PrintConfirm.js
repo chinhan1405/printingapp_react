@@ -16,7 +16,7 @@ export function PrintConfirm() {
             .then(data => {
                 setDocuments(data.data);
                 let total = 0;
-                if (data.data.length == 1) {
+                if (data.data.length === 1) {
                     total = location.state.pages[1] - location.state.pages[0] + 1;
                 } else {
                     data.data.forEach(element => {
@@ -142,7 +142,8 @@ function DocumentCard({ name, date, pages, format }) {
             <div className="card-body" style={{background: '#2d3638', borderRadius: '20px'}}>
                 <div className="row align-items-center">
                     <div className="col-4">
-                        <img className="card-image" src={(format === "pdf") ? "..\img\pdf.png" : "..\img\docx.png"} alt="thumbnail"/>
+                        {/*<img className="card-image" src={(format === 'pdf') ? "..\img\pdf.png" : "..\img\docx.png"} alt="thumbnail" />*/}
+                        <img className="card-image" src="..\img\pdf.png" alt="thumbnail" />
                     </div>
                     <div className="col-8 align-items-center">
                         <div className = "d-flex flex-column">
