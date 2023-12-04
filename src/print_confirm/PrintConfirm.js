@@ -142,7 +142,11 @@ function DocumentCard({ name, date, pages, format }) {
             <div className="card-body" style={{background: '#2d3638', borderRadius: '20px'}}>
                 <div className="row align-items-center">
                     <div className="col-4">
+<<<<<<< HEAD
                         <img className="card-image" src={(format === "pdf") ? "img/pdf.png" : "img/docx.png"} alt="thumbnail"/>
+=======
+                        <img className="card-image" src="..\img\pdf.png" alt="thumbnail"/>
+>>>>>>> 7fb9c63cccfb5b04f5713a69c07f441d3d3902b0
                     </div>
                     <div className="col-8 align-items-center">
                         <div className = "d-flex flex-column">
