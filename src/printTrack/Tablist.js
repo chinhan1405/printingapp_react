@@ -96,9 +96,8 @@ export default function TrackTab() {
 function OrderCard({ history }) {
     const [document, setDocument] = React.useState('')
     const [config, setConfig] = React.useState('')
-  const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = React.useState(false);
     const [hover, setHover] = React.useState(false);
-    const navigate = useNavigate();
     
   const handleDeleteClick = () => {
     setOpen(true);
@@ -138,6 +137,7 @@ function OrderCard({ history }) {
             })
             .catch(error => console.error('Error fetching documents:', error));
         document.status = "ready";
+        console.log(document);
         fetch(configs.baseAPI + configs.updateDocByIdAPI + history.document_id, {
             method: 'PUT',
             headers: {
@@ -147,10 +147,11 @@ function OrderCard({ history }) {
         })
             .then(response => response.json())
             .then(data => {
+                setOpen(false);
+                window.location.reload();
             })
             .catch(error => console.error('Error updating document:', error));
-        setOpen(false);
-        window.location.reload();
+        
     };
 
   const handleConfirmClick = () => {

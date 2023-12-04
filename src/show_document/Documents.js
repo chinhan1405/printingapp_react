@@ -2,14 +2,20 @@ import './Documents.css';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import configs from '../configs/api_config';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import { Button} from '@mui/material';
 const moment = require('moment');
+
 export default function Documents() {
     const [documents, setDocuments] = useState([]);
     const navigate = useNavigate();
     const [selected, setSelected] = useState(false);
     const [upload, setUpload] = useState(false);
     const [uploading, setUploading] = useState(false);
-
+    const [open, setOpen] = useState(false);
     useEffect(() => {
         fetch(configs.baseAPI + configs.getAllDocAPI)
             .then(response => response.json())
@@ -40,11 +46,9 @@ export default function Documents() {
             .then(response => response.json())
             .then(data => {
                 // Cập nhật trạng thái đã chọn trong state
-                console.log(data);
                 setDocuments(updatedDocuments);
             })
             .catch(error => console.error('Error updating document:', error));
-        console.log(updatedDocuments);
     };
 
     const handlePrintSelected = () => {
@@ -57,14 +61,47 @@ export default function Documents() {
             alert('Vui lòng chọn ít nhất một tài liệu.');
         }
     };
+    const handleDeleteClick = () => {
+        setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
+    };
+    const handleDelete = () => {
+        const selectedFiles = documents.filter(doc => doc.status === "selected");
+        const totalSelectedFiles = selectedFiles.length;
 
-    const handleDeleteDocument = () => {
-
+        // Biến đếm để theo dõi số lượng file đã xóa
+        let deletedFilesCount = 0;
+        console.log('totalSelectedFiles: ' + totalSelectedFiles);
+        for (let i = 0; i < documents.length; i++) {
+            if (documents[i].status === "selected") {
+                fetch(configs.baseAPI + configs.deleteDocAPI + '?docId=' + documents[i]._id + '&fileId=' + documents[i].fileId)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Delete file ' + documents[i].name);
+                        deletedFilesCount++;
+                        console.log(deletedFilesCount);
+                        // Kiểm tra nếu tất cả các file đã được xóa
+                        if (deletedFilesCount === totalSelectedFiles) {
+                            // Gọi hàm window.location.reload() khi tất cả các file đã được xóa
+                            console.log('Delete done');
+                        }
+                    })
+                    .catch(error => {
+                        deletedFilesCount++;;
+                        console.error('Error updating document:', error);
+                    });
+            }
+        }
+        setOpen(false);
     }
+
 
     const handleQuickPrint = (index) => {
         const updatedDocuments = [...documents];
-        updatedDocuments[index].status = "selected"
+        updatedDocuments[index].status = "selected";
+        let completedRequests = 0;
         for (let i = 0; i < updatedDocuments.length; i++) {
             if (i !== index) {
                 updatedDocuments[i].status = "ready";
@@ -78,10 +115,19 @@ export default function Documents() {
             })
                 .then(response => response.json())
                 .then(data => {
+                    completedRequests++;
+                    if (completedRequests === updatedDocuments.length) {
+                        // All requests completed successfully
+                        navigate('/configprint/');
+                    }
                 })
-                .catch(error => console.error('Error updating document:', error));
+                .catch(error => {
+                    completedRequests++;
+                    console.error('Error updating document:', error)
+                });
         }
-        navigate('/configprint/');
+        
+        
     };
     const handleBackHome = () => {
         navigate('/')
@@ -107,7 +153,7 @@ export default function Documents() {
                     .then(response => response.json())
                     .then(data => {
                         setUploading(false);
-                        window.location.reload();
+                        fileUpload.value = null;
                     })
                     .catch(error => {
                         console.error('Error uploading file: ', error);
@@ -129,7 +175,7 @@ export default function Documents() {
             <div className="container" style={{marginTop: '2rem'}}>
                 <div className="row">
                     <div className="col-md-3 d-flex d-md-flex justify-content-center align-self-center justify-content-md-center func-button"><button className="btn btn-info" type="button" onClick={handleBackHome}>Trang chủ</button></div>
-                    <div className="col-md-3 d-flex d-md-flex justify-content-center justify-content-md-center func-button"><button className="btn btn-info" type="button" onClick={handleDeleteDocument} disabled={!selected}>Xóa tài liệu đã chọn</button></div>
+                    <div className="col-md-3 d-flex d-md-flex justify-content-center justify-content-md-center func-button"><button className="btn btn-info" type="button" onClick={handleDeleteClick} disabled={!selected}>Xóa tài liệu đã chọn</button></div>
                     <div className="col-md-3 d-flex d-md-flex justify-content-center justify-content-md-center func-button"><button className="btn btn-info" type="button" onClick={handlePrintSelected} disabled={!selected}>In tài liệu đã chọn</button></div>
                     <div className="col-md-3 d-flex d-lg-flex justify-content-center justify-content-lg-center func-button">
                         <button className="btn btn-info" type="button" onClick={togglePopup} style={{ marginLeft: '0px' }} disabled={upload}>
@@ -171,6 +217,23 @@ export default function Documents() {
                     }
                 </div>
             </div>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+            >
+                <DialogTitle>
+                    {"Xác nhận xóa tài liệu"}
+                </DialogTitle>
+                <DialogContent>
+                    Bạn chắc chắn muốn xóa?
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDelete}>Đồng ý</Button>
+                    <Button onClick={handleClose} autoFocus>
+                        Hủy
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     )
 }
