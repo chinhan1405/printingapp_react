@@ -6,6 +6,7 @@ const moment = require('moment');
 export function PrintConfirm() {
     const location = useLocation();
     const [documents, setDocuments] = useState([]);
+    const [printer, setPrinter] = useState(null);
     const [printconfigs, setConfigs] = useState(null);
     const [total_pages, setTotalPages] = useState(0)
     const navigate = useNavigate();
@@ -15,13 +16,24 @@ export function PrintConfirm() {
             .then(data => {
                 setDocuments(data.data);
                 let total = 0;
-                data.data.forEach(element => {
-                    total += element.pages;
-                })
+                if (data.data.length == 1) {
+                    total = location.state.pages[1] - location.state.pages[0] + 1;
+                } else {
+                    data.data.forEach(element => {
+                        total += element.pages;
+                    })
+                }
                 setTotalPages(total);
             })
             .catch(error => console.error('Error fetching documents:', error));
         setConfigs(location.state);
+        fetch(configs.baseAPI + configs.getPrinterAPI + location.state.printer)
+            .then(response => response.json())
+            .then(data => {
+                setPrinter(data.data);
+            })
+            .catch(error => console.error('Error fetching documents:', error));
+
     }, []);
     const handleClickPrint = () => {
         fetch(configs.baseAPI + configs.createPrtConfigAPI, {
@@ -86,6 +98,7 @@ export function PrintConfirm() {
                                     name={document.name}
                                     date={moment(document.date).format('DD/MM/YYYY')}
                                     pages={document.pages}
+                                    format={document.format}
                                 />
                             </div>
                         )
@@ -96,7 +109,7 @@ export function PrintConfirm() {
             <div className="row py-4">
                 <div className="col-6">
                     <strong className="title">Máy in:</strong>
-                    {printconfigs ? printconfigs.printer: ""}
+                    {printer? ("Máy " + printer.code + ", Loại: " + printer.type + ", Cơ sở: " + printer.campus + ", Tòa: " + printer.building + ", Tầng: " + printer.level):""}
                 </div>
                 <div className="col-6">
                     <strong className="title">Tổng số trang: </strong>
@@ -123,13 +136,13 @@ export function PrintConfirm() {
     );
 }
 
-function DocumentCard({name, date, pages}) {
+function DocumentCard({ name, date, pages, format }) {
     return (
         <div className="card" style={{marginBottom: '2rem', border: 0}}>
             <div className="card-body" style={{background: '#2d3638', borderRadius: '20px'}}>
                 <div className="row align-items-center">
                     <div className="col-4">
-                        <img className="card-image" src="img/tutor.jpg" alt="thumbnail"/>
+                        <img className="card-image" src={(format === "pdf") ? "img/pdf.png" : "img/docx.png"} alt="thumbnail"/>
                     </div>
                     <div className="col-8 align-items-center">
                         <div className = "d-flex flex-column">
